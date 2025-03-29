@@ -1,0 +1,148 @@
+---
+# Database Schema Query
+schema:
+  title: Database Schema
+  sql: DESCRIBE {{ table_name }}
+  parameters:
+    table_name:
+      required: true
+      description: Name of the table to analyze
+
+# Row Count Query
+count:
+  title: Row Count
+  sql: SELECT COUNT(*) FROM {{ table_name }}
+  parameters:
+    table_name:
+      required: true
+      description: Name of the table to analyze
+
+# Top Level Hostnames Query
+top_level_hostnames:
+  title: Top Websites by Resource Count
+  sql: |
+    SELECT 
+      top_level_hostname,
+      COUNT(*) as count 
+    FROM {{ table_name }}
+    GROUP BY 1
+    ORDER BY 2 DESC
+    LIMIT {{ limit }}
+  parameters:
+    table_name:
+      required: true
+      description: Name of the table to analyze
+    limit:
+      default: 15
+      description: Maximum number of results to return
+  visualization:
+    type: bar_chart
+    x_col: count
+    y_col: top_level_hostname
+    horizontal: true
+    palette: viridis
+
+# Resource Hostnames Query
+resource_hostnames:
+  title: Resource Hostnames
+  sql: |
+    SELECT 
+      resource_hostname,
+      COUNT(*) as count 
+    FROM {{ table_name }}
+    GROUP BY 1
+    ORDER BY 2 DESC
+    LIMIT {{ limit }}
+  parameters:
+    table_name:
+      required: true
+      description: Name of the table to analyze
+    limit:
+      default: 15
+      description: Maximum number of results to return
+
+# Resource Types Query
+resource_types:
+  title: Distribution of Resource Types
+  sql: |
+    SELECT 
+      resource_type,
+      resource_hostname,
+      COUNT(*) as count 
+    FROM {{ table_name }}
+    GROUP BY 1, 2
+    ORDER BY 3 DESC
+    LIMIT {{ limit }}
+  parameters:
+    table_name:
+      required: true
+      description: Name of the table to analyze
+    limit:
+      default: 15
+      description: Maximum number of resource type/hostname combinations to include
+  visualization:
+    type: bar_chart
+    x_col: resource_hostname
+    y_col: count
+    horizontal: false
+    palette: hls
+
+# Sample Data Query
+sample_data:
+  title: Sample Data
+  sql: |
+    SELECT 
+      top_level_hostname,
+      resource_hostname,
+      resource_type,
+      last_update
+    FROM {{ table_name }}
+    LIMIT {{ limit }}
+  parameters:
+    table_name:
+      required: true
+      description: Name of the table to analyze
+    limit:
+      default: 5
+      description: Number of sample rows to return
+
+# Loading Patterns Query
+loading_patterns:
+  title: Common Loading Patterns
+  sql: |
+    SELECT 
+      top_level_hostname,
+      resource_hostname,
+      resource_type,
+      COUNT(*) as frequency
+    FROM {{ table_name }}
+    GROUP BY 1, 2, 3
+    ORDER BY 4 DESC
+    LIMIT {{ limit }}
+  parameters:
+    table_name:
+      required: true
+      description: Name of the table to analyze
+    limit:
+      default: 10
+      description: Maximum number of patterns to return
+
+# Timeline Query
+timeline:
+  title: Resource Update Timeline
+  sql: |
+    SELECT 
+      last_update,
+      COUNT(*) as count
+    FROM {{ table_name }}
+    GROUP BY 1
+    ORDER BY 1
+    LIMIT {{ limit }}
+  parameters:
+    table_name:
+      required: true
+      description: Name of the table to analyze
+    limit:
+      default: 15000
+      description: Maximum number of time points to include
+  # No visualization config here as we're handling it in code

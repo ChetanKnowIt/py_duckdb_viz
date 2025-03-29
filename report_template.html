@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Analysis Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+            background-color: #e9f7fe;
+            padding: 8px 12px;
+            border-radius: 0 4px 4px 0;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .visualization {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .visualization img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e3f2fd;
+        }
+        .timestamp {
+            color: #666;
+            font-style: italic;
+            text-align: right;
+            margin-top: 30px;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        .summary {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .error {
+            color: #e74c3c;
+            background-color: #fce4ec;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .toc {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        .toc a {
+            display: block;
+            margin: 8px 0;
+            color: #2980b9;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Database Analysis Report</h1>
+    <div class="summary">
+        <p>Analysis of: <strong>{{ db_name }}</strong></p>
+        <p>Generated on: <strong>{{ timestamp }}</strong></p>
+    </div>
+
+    <div class="toc">
+        <h2>Contents</h2>
+        {% for name, data in results.items() %}
+            {% if name != 'db_path' %}
+                <a href="#{{ name }}">{{ data.title }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% for name, data in results.items() %}
+        {% if name != 'db_path' %}
+            <div id="{{ name }}" class="section">
+                <h2>{{ data.title }}</h2>
+                
+                {% if data.dataframe is defined and data.dataframe is not none %}
+                    <div class="table-container" style="max-width: 100%; overflow-x: auto;">
+                        <div id="table-{{ name }}">{{ data.dataframe_html|safe }}</div>
+                        <script>
+                            (function() {
+                                // Get the table
+                                var table = document.querySelector("#table-{{ name }} table");
+                                if (!table) return;
+                                
+                                // Set maximum width and enable horizontal scrolling
+                                table.style.maxWidth = "100%";
+                                
+                                // Get all rows except the header
+                                var rows = Array.from(table.querySelectorAll("tr")).slice(1);
+                                if (rows.length <= 5) return; // No need for pagination if 5 or fewer rows
+                                
+                                // Hide rows beyond the first 5
+                                for (var i = 5; i < rows.length; i++) {
+                                    rows[i].style.display = "none";
+                                }
+                                
+                                // Create pagination controls
+                                var paginationDiv = document.createElement("div");
+                                paginationDiv.style.margin = "10px 0";
+                                
+                                // Show more button
+                                var showMoreBtn = document.createElement("button");
+                                showMoreBtn.innerText = "Show More (5 of " + rows.length + " rows shown)";
+                                showMoreBtn.onclick = function() {
+                                    for (var i = 0; i < rows.length; i++) {
+                                        rows[i].style.display = "";
+                                    }
+                                    this.style.display = "none";
+                                    showLessBtn.style.display = "";
+                                };
+                                
+                                // Show less button (initially hidden)
+                                var showLessBtn = document.createElement("button");
+                                showLessBtn.innerText = "Show Less";
+                                showLessBtn.style.display = "none";
+                                showLessBtn.onclick = function() {
+                                    for (var i = 5; i < rows.length; i++) {
+                                        rows[i].style.display = "none";
+                                    }
+                                    this.style.display = "none";
+                                    showMoreBtn.style.display = "";
+                                };
+                                
+                                // Add buttons to pagination div
+                                paginationDiv.appendChild(showMoreBtn);
+                                paginationDiv.appendChild(showLessBtn);
+                                
+                                // Add pagination div after the table
+                                table.parentNode.appendChild(paginationDiv);
+                            })();
+                        </script>
+                    </div>
+                {% elif data.visualization is not defined or not data.visualization %}
+                    <p>No data available.</p>
+                {% endif %}
+                
+                {% if data.visualization is defined and data.visualization %}
+                    <div class="visualization">
+                        {% if embed_images %}
+                            <img src="data:image/{{ data.img_format }};base64,{{ data.img_data }}" alt="{{ data.title }}">
+                        {% else %}
+                            <img src="{{ data.viz_path }}" alt="{{ data.title }}">
+                        {% endif %}
+                    </div>
+                {% endif %}
+                
+                {% if data.error is defined and data.error %}
+                    <div class="error">{{ data.error }}</div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="timestamp">
+        <p>Report completed at: {{ completion_time }}</p>
+    </div>
+</body>
+</html>
