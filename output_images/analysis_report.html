@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Analysis Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+            background-color: #e9f7fe;
+            padding: 8px 12px;
+            border-radius: 0 4px 4px 0;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .visualization {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .visualization img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e3f2fd;
+        }
+        .timestamp {
+            color: #666;
+            font-style: italic;
+            text-align: right;
+            margin-top: 30px;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        .summary {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .error {
+            color: #e74c3c;
+            background-color: #fce4ec;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .toc {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        .toc a {
+            display: block;
+            margin: 8px 0;
+            color: #2980b9;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Database Analysis Report</h1>
+    <div class="summary">
+        <p>Analysis of: <strong>load_statistics.db</strong></p>
+        <p>Generated on: <strong>2025-03-29 13:11:43</strong></p>
+    </div>
+
+    <div class="toc">
+        <h2>Contents</h2>
+        
+            
+                <a href="#schema">Database Schema</a>
+            
+        
+            
+                <a href="#count">Row Count</a>
+            
+        
+            
+                <a href="#top_level_hostnames">Top Websites by Resource Count</a>
+            
+        
+            
+                <a href="#resource_hostnames">Resource Hostnames</a>
+            
+        
+            
+                <a href="#resource_types">Distribution of Resource Types</a>
+            
+        
+            
+                <a href="#sample_data">Sample Data</a>
+            
+        
+            
+                <a href="#loading_patterns">Common Loading Patterns</a>
+            
+        
+            
+                <a href="#timeline">Resource Update Timeline</a>
+            
+        
+    </div>
+
+    
+        
+            <div id="schema" class="section">
+                <h2>Database Schema</h2>
+                
+                
+                    <div class="table-container" style="max-width: 100%; overflow-x: auto;">
+                        <div id="table-schema"><table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>column_name</th>
+      <th>column_type</th>
+      <th>null</th>
+      <th>key</th>
+      <th>default</th>
+      <th>extra</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>top_level_hostname</td>
+      <td>VARCHAR</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>resource_hostname</td>
+      <td>VARCHAR</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>resource_url_hash</td>
+      <td>VARCHAR</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>resource_type</td>
+      <td>BIGINT</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>last_update</td>
+      <td>BIGINT</td>
+      <td>NO</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table></div>
+                        <script>
+                            (function() {
+                                // Get the table
+                                var table = document.querySelector("#table-schema table");
+                                if (!table) return;
+                                
+                                // Set maximum width and enable horizontal scrolling
+                                table.style.maxWidth = "100%";
+                                
+                                // Get all rows except the header
+                                var rows = Array.from(table.querySelectorAll("tr")).slice(1);
+                                if (rows.length <= 5) return; // No need for pagination if 5 or fewer rows
+                                
+                                // Hide rows beyond the first 5
+                                for (var i = 5; i < rows.length; i++) {
+                                    rows[i].style.display = "none";
+                                }
+                                
+                                // Create pagination controls
+                                var paginationDiv = document.createElement("div");
+                                paginationDiv.style.margin = "10px 0";
+                                
+                                // Show more button
+                                var showMoreBtn = document.createElement("button");
+                                showMoreBtn.innerText = "Show More (5 of " + rows.length + " rows shown)";
+                                showMoreBtn.onclick = function() {
+                                    for (var i = 0; i < rows.length; i++) {
+                                        rows[i].style.display = "";
+                                    }
+                                    this.style.display = "none";
+                                    showLessBtn.style.display = "";
+                                };
+                                
+                                // Show less button (initially hidden)
+                                var showLessBtn = document.createElement("button");
+                                showLessBtn.innerText = "Show Less";
+                                showLessBtn.style.display = "none";
+                                showLessBtn.onclick = function() {
+                                    for (var i = 5; i < rows.length; i++) {
+                                        rows[i].style.display = "none";
+                                    }
+                                    this.style.display = "none";
+                                    showMoreBtn.style.display = "";
+                                };
+                                
+                                // Add buttons to pagination div
+                                paginationDiv.appendChild(showMoreBtn);
+                                paginationDiv.appendChild(showLessBtn);
+                                
+                                // Add pagination div after the table
+                                table.parentNode.appendChild(paginationDiv);
+                            })();
+                        </script>
+                    </div>
+                
+                
+                
+                
+                
+            </div>
+        
+    
+        
+            <div id="count" class="section">
+                <h2>Row Count</h2>
+                
+                
+                    <div class="table-container" style="max-width: 100%; overflow-x: auto;">
+                        <div id="table-count"><table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>count_star()</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>17445</td>
+    </tr>
+  </tbody>
+</table></div>
+                        <script>
+                            (function() {
+                                // Get the table
+                                var table = document.querySelector("#table-count table");
+                                if (!table) return;
+                                
+                                // Set maximum width and enable horizontal scrolling
+                                table.style.maxWidth = "100%";
+                                
+                                // Get all rows except the header
+                                var rows = Array.from(table.querySelectorAll("tr")).slice(1);
+                                if (rows.length <= 5) return; // No need for pagination if 5 or fewer rows
+                                
+                                // Hide rows beyond the first 5
+                                for (var i = 5; i < rows.length; i++) {
+                                    rows[i].style.display = "none";
+                                }
+                                
+                                // Create pagination controls
+                                var paginationDiv = document.createElement("div");
+                                paginationDiv.style.margin = "10px 0";
+                                
+                                // Show more button
+                                var showMoreBtn = document.createElement("button");
+                                showMoreBtn.innerText = "Show More (5 of " + rows.length + " rows shown)";
+                                showMoreBtn.onclick = function() {
+                                    for (var i = 0; i < rows.length; i++) {
+                                        rows[i].style.display = "";
+                                    }
+                                    this.style.display = "none";
+                                    showLessBtn.style.display = "";
+                                };
+                                
+                                // Show less button (initially hidden)
+                                var showLessBtn = document.createElement("button");
+                                showLessBtn.innerText = "Show Less";
+                                showLessBtn.style.display = "none";
+                                showLessBtn.onclick = function() {
+                                    for (var i = 5; i < rows.length; i++) {
+                                        rows[i].style.display = "none";
+                                    }
+                                    this.style.display = "none";
+                                    showMoreBtn.style.display = "";
+                                };
+                                
+                                // Add buttons to pagination div
+                                paginationDiv.appendChild(showMoreBtn);
+                                paginationDiv.appendChild(showLessBtn);
+                                
+                                // Add pagination div after the table
+                                table.parentNode.appendChild(paginationDiv);
+                            })();
+                        </script>
+                    </div>
+                
+                
+                
+                
+                
+            </div>
+        
+    
+        
+            <div id="top_level_hostnames" class="section">
+                <h2>Top Websites by Resource Count</h2>
+                
+                
+                    <div class="table-container" style="max-width: 100%; overflow-x: auto;">
+                        <div id="table-top_level_hostnames"><table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>top_level_hostname</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>www.bing.com</td>
+      <td>6199</td>
+    </tr>
+    <tr>
+      <td>www.netflix.com</td>
+      <td>3420</td>
+    </tr>
+    <tr>
+      <td>ntp.msn.com</td>
+      <td>2982</td>
+    </tr>
+    <tr>
+      <td>stackoverflow.com</td>
+      <td>622</td>
+    </tr>
+    <tr>
+      <td>www.anandtech.com</td>
+      <td>573</td>
+    </tr>
+    <tr>
+      <td>www.microsoft.com</td>
+      <td>427</td>
+    </tr>
+    <tr>
+      <td>www.youtube.com</td>
+      <td>389</td>
+    </tr>
+    <tr>
+      <td>github.com</td>
+      <td>387</td>
+    </tr>
+    <tr>
+      <td>discover-chat</td>
+      <td>300</td>
+    </tr>
+    <tr>
+      <td>techxplore.com</td>
+      <td>215</td>
+    </tr>
+    <tr>
+      <td>www.start.gg</td>
+      <td>155</td>
+    </tr>
+    <tr>
+      <td>realpython.com</td>
+      <td>153</td>
+    </tr>
+    <tr>
+      <td>www.msn.com</td>
+      <td>147</td>
+    </tr>
+    <tr>
+      <td>www.kaggle.com</td>
+      <td>144</td>
+    </tr>
+    <tr>
+      <td>cloud.google.com</td>
+      <td>134</td>
+    </tr>
+  </tbody>
+</table></div>
+                        <script>
+                            (function() {
+                                // Get the table
+                                var table = document.querySelector("#table-top_level_hostnames table");
+                                if (!table) return;
+                                
+                                // Set maximum width and enable horizontal scrolling
+                                table.style.maxWidth = "100%";
+                                
+                                // Get all rows except the header
+                                var rows = Array.from(table.querySelectorAll("tr")).slice(1);
+                                if (rows.length <= 5) return; // No need for pagination if 5 or fewer rows
+                                
+                                // Hide rows beyond the first 5
+                                for (var i = 5; i < rows.length; i++) {
+                                    rows[i].style.display = "none";
+                                }
+                                
+                                // Create pagination controls
+                                var paginationDiv = document.createElement("div");
+                                paginationDiv.style.margin = "10px 0";
+                                
+                                // Show more button
+                                var showMoreBtn = document.createElement("button");
+                                showMoreBtn.innerText = "Show More (5 of " + rows.length + " rows shown)";
+                                showMoreBtn.onclick = function() {
+                                    for (var i = 0; i < rows.length; i++) {
+                                        rows[i].style.display = "";
+                                    }
+                                    this.style.display = "none";
+                                    showLessBtn.style.display = "";
+                                };
+                                
+                                // Show less button (initially hidden)
+                                var showLessBtn = document.createElement("button");
+                                showLessBtn.innerText = "Show Less";
+                                showLessBtn.style.display = "none";
+                                showLessBtn.onclick = function() {
+                                    for (var i = 5; i < rows.length; i++) {
+                                        rows[i].style.display = "none";
+                                    }
+                                    this.style.display = "none";
+                                    showMoreBtn.style.display = "";
+                                };
+                                
+                                // Add buttons to pagination div
+                                paginationDiv.appendChild(showMoreBtn);
+                                paginationDiv.appendChild(showLessBtn);
+                                
+                                // Add pagination div after the table
+                                table.parentNode.appendChild(paginationDiv);
+                            })();
+                        </script>
+                    </div>
+                
+                
+                
+                    <div class="visualization">
+                        
+                            <img src="top_level_hostnames.png" alt="Top Websites by Resource Count">
+                        
+                    </div>
+                
+                
+                
+            </div>
+        
+    
+        
+            <div id="resource_hostnames" class="section">
+                <h2>Resource Hostnames</h2>
+                
+                
+                    <div class="table-container" style="max-width: 100%; overflow-x: auto;">
+                        <div id="table-resource_hostnames"><table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>resource_hostname</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>www.bingapis.com</td>
+      <td>4876</td>
+    </tr>
+    <tr>
+      <td>ipv4-c001-pnq001-limerick-isp.1.oca.nflxvideo.net</td>
+      <td>2845</td>
+    </tr>
+    <tr>
+      <td>th.bing.com</td>
+      <td>1594</td>
+    </tr>
+    <tr>
+      <td>www.bing.com</td>
+      <td>1490</td>
+    </tr>
+    <tr>
+      <td>occ-0-4258-2164.1.nflxso.net</td>
+      <td>431</td>
+    </tr>
+    <tr>
+      <td>edgeservices.bing.com</td>
+      <td>331</td>
+    </tr>
+    <tr>
+      <td>github.githubassets.com</td>
+      <td>316</td>
+    </tr>
+    <tr>
+      <td>login.live.com</td>
+      <td>261</td>
+    </tr>
+    <tr>
+      <td>login.microsoftonline.com</td>
+      <td>257</td>
+    </tr>
+    <tr>
+      <td>www.google-analytics.com</td>
+      <td>216</td>
+    </tr>
+    <tr>
+      <td>edgestatic.azureedge.net</td>
+      <td>210</td>
+    </tr>
+    <tr>
+      <td>img-s-msn-com.akamaized.net</td>
+      <td>205</td>
+    </tr>
+    <tr>
+      <td>securepubads.g.doubleclick.net</td>
+      <td>194</td>
+    </tr>
+    <tr>
+      <td>pagead2.googlesyndication.com</td>
+      <td>181</td>
+    </tr>
+    <tr>
+      <td>fonts.gstatic.com</td>
+      <td>169</td>
+    </tr>
+  </tbody>
+</table></div>
+                        <script>
+                            (function() {
+                                // Get the table
+                                var table = document.querySelector("#table-resource_hostnames table");
+                                if (!table) return;
+                                
+                                // Set maximum width and enable horizontal scrolling
+                                table.style.maxWidth = "100%";
+                                
+                                // Get all rows except the header
+                                var rows = Array.from(table.querySelectorAll("tr")).slice(1);
+                                if (rows.length <= 5) return; // No need for pagination if 5 or fewer rows
+                                
+                                // Hide rows beyond the first 5
+                                for (var i = 5; i < rows.length; i++) {
+                                    rows[i].style.display = "none";
+                                }
+                                
+                                // Create pagination controls
+                                var paginationDiv = document.createElement("div");
+                                paginationDiv.style.margin = "10px 0";
+                                
+                                // Show more button
+                                var showMoreBtn = document.createElement("button");
+                                showMoreBtn.innerText = "Show More (5 of " + rows.length + " rows shown)";
+                                showMoreBtn.onclick = function() {
+                                    for (var i = 0; i < rows.length; i++) {
+                                        rows[i].style.display = "";
+                                    }
+                                    this.style.display = "none";
+                                    showLessBtn.style.display = "";
+                                };
+                                
+                                // Show less button (initially hidden)
+                                var showLessBtn = document.createElement("button");
+                                showLessBtn.innerText = "Show Less";
+                                showLessBtn.style.display = "none";
+                                showLessBtn.onclick = function() {
+                                    for (var i = 5; i < rows.length; i++) {
+                                        rows[i].style.display = "none";
+                                    }
+                                    this.style.display = "none";
+                                    showMoreBtn.style.display = "";
+                                };
+                                
+                                // Add buttons to pagination div
+                                paginationDiv.appendChild(showMoreBtn);
+                                paginationDiv.appendChild(showLessBtn);
+                                
+                                // Add pagination div after the table
+                                table.parentNode.appendChild(paginationDiv);
+                            })();
+                        </script>
+                    </div>
+                
+                
+                
+                
+                
+            </div>
+        
+    
+        
+            <div id="resource_types" class="section">
+                <h2>Distribution of Resource Types</h2>
+                
+                
+                    <div class="table-container" style="max-width: 100%; overflow-x: auto;">
+                        <div id="table-resource_types"><table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>resource_type</th>
+      <th>resource_hostname</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>13</td>
+      <td>www.bingapis.com</td>
+      <td>4876</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>ipv4-c001-pnq001-limerick-isp.1.oca.nflxvideo.net</td>
+      <td>2845</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>th.bing.com</td>
+      <td>1594</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>www.bing.com</td>
+      <td>1003</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>occ-0-4258-2164.1.nflxso.net</td>
+      <td>429</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>www.bing.com</td>
+      <td>276</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>github.githubassets.com</td>
+      <td>271</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>login.live.com</td>
+      <td>248</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>login.microsoftonline.com</td>
+      <td>245</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>www.bing.com</td>
+      <td>204</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>img-s-msn-com.akamaized.net</td>
+      <td>202</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>securepubads.g.doubleclick.net</td>
+      <td>178</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>services.bingapis.com</td>
+      <td>152</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>edgeservices.bing.com</td>
+      <td>148</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>www.google-analytics.com</td>
+      <td>135</td>
+    </tr>
+  </tbody>
+</table></div>
+                        <script>
+                            (function() {
+                                // Get the table
+                                var table = document.querySelector("#table-resource_types table");
+                                if (!table) return;
+                                
+                                // Set maximum width and enable horizontal scrolling
+                                table.style.maxWidth = "100%";
+                                
+                                // Get all rows except the header
+                                var rows = Array.from(table.querySelectorAll("tr")).slice(1);
+                                if (rows.length <= 5) return; // No need for pagination if 5 or fewer rows
+                                
+                                // Hide rows beyond the first 5
+                                for (var i = 5; i < rows.length; i++) {
+                                    rows[i].style.display = "none";
+                                }
+                                
+                                // Create pagination controls
+                                var paginationDiv = document.createElement("div");
+                                paginationDiv.style.margin = "10px 0";
+                                
+                                // Show more button
+                                var showMoreBtn = document.createElement("button");
+                                showMoreBtn.innerText = "Show More (5 of " + rows.length + " rows shown)";
+                                showMoreBtn.onclick = function() {
+                                    for (var i = 0; i < rows.length; i++) {
+                                        rows[i].style.display = "";
+                                    }
+                                    this.style.display = "none";
+                                    showLessBtn.style.display = "";
+                                };
+                                
+                                // Show less button (initially hidden)
+                                var showLessBtn = document.createElement("button");
+                                showLessBtn.innerText = "Show Less";
+                                showLessBtn.style.display = "none";
+                                showLessBtn.onclick = function() {
+                                    for (var i = 5; i < rows.length; i++) {
+                                        rows[i].style.display = "none";
+                                    }
+                                    this.style.display = "none";
+                                    showMoreBtn.style.display = "";
+                                };
+                                
+                                // Add buttons to pagination div
+                                paginationDiv.appendChild(showMoreBtn);
+                                paginationDiv.appendChild(showLessBtn);
+                                
+                                // Add pagination div after the table
+                                table.parentNode.appendChild(paginationDiv);
+                            })();
+                        </script>
+                    </div>
+                
+                
+                
+                    <div class="visualization">
+                        
+                            <img src="resource_types.png" alt="Distribution of Resource Types">
+                        
+                    </div>
+                
+                
+                
+            </div>
+        
+    
+        
+            <div id="sample_data" class="section">
+                <h2>Sample Data</h2>
+                
+                
+                    <div class="table-container" style="max-width: 100%; overflow-x: auto;">
+                        <div id="table-sample_data"><table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>top_level_hostname</th>
+      <th>resource_hostname</th>
+      <th>resource_type</th>
+      <th>last_update</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ntp.msn.com</td>
+      <td>th.bing.com</td>
+      <td>4</td>
+      <td>13346527881026989</td>
+    </tr>
+    <tr>
+      <td>ntp.msn.com</td>
+      <td>th.bing.com</td>
+      <td>4</td>
+      <td>13346527881294906</td>
+    </tr>
+    <tr>
+      <td>ntp.msn.com</td>
+      <td>th.bing.com</td>
+      <td>4</td>
+      <td>13346527884397015</td>
+    </tr>
+    <tr>
+      <td>ntp.msn.com</td>
+      <td>th.bing.com</td>
+      <td>4</td>
+      <td>13346527884409676</td>
+    </tr>
+    <tr>
+      <td>ntp.msn.com</td>
+      <td>th.bing.com</td>
+      <td>4</td>
+      <td>13346527884458920</td>
+    </tr>
+  </tbody>
+</table></div>
+                        <script>
+                            (function() {
+                                // Get the table
+                                var table = document.querySelector("#table-sample_data table");
+                                if (!table) return;
+                                
+                                // Set maximum width and enable horizontal scrolling
+                                table.style.maxWidth = "100%";
+                                
+                                // Get all rows except the header
+                                var rows = Array.from(table.querySelectorAll("tr")).slice(1);
+                                if (rows.length <= 5) return; // No need for pagination if 5 or fewer rows
+                                
+                                // Hide rows beyond the first 5
+                                for (var i = 5; i < rows.length; i++) {
+                                    rows[i].style.display = "none";
+                                }
+                                
+                                // Create pagination controls
+                                var paginationDiv = document.createElement("div");
+                                paginationDiv.style.margin = "10px 0";
+                                
+                                // Show more button
+                                var showMoreBtn = document.createElement("button");
+                                showMoreBtn.innerText = "Show More (5 of " + rows.length + " rows shown)";
+                                showMoreBtn.onclick = function() {
+                                    for (var i = 0; i < rows.length; i++) {
+                                        rows[i].style.display = "";
+                                    }
+                                    this.style.display = "none";
+                                    showLessBtn.style.display = "";
+                                };
+                                
+                                // Show less button (initially hidden)
+                                var showLessBtn = document.createElement("button");
+                                showLessBtn.innerText = "Show Less";
+                                showLessBtn.style.display = "none";
+                                showLessBtn.onclick = function() {
+                                    for (var i = 5; i < rows.length; i++) {
+                                        rows[i].style.display = "none";
+                                    }
+                                    this.style.display = "none";
+                                    showMoreBtn.style.display = "";
+                                };
+                                
+                                // Add buttons to pagination div
+                                paginationDiv.appendChild(showMoreBtn);
+                                paginationDiv.appendChild(showLessBtn);
+                                
+                                // Add pagination div after the table
+                                table.parentNode.appendChild(paginationDiv);
+                            })();
+                        </script>
+                    </div>
+                
+                
+                
+                
+                
+            </div>
+        
+    
+        
+            <div id="loading_patterns" class="section">
+                <h2>Common Loading Patterns</h2>
+                
+                
+                    <div class="table-container" style="max-width: 100%; overflow-x: auto;">
+                        <div id="table-loading_patterns"><table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>top_level_hostname</th>
+      <th>resource_hostname</th>
+      <th>resource_type</th>
+      <th>frequency</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>www.bing.com</td>
+      <td>www.bingapis.com</td>
+      <td>13</td>
+      <td>4876</td>
+    </tr>
+    <tr>
+      <td>www.netflix.com</td>
+      <td>ipv4-c001-pnq001-limerick-isp.1.oca.nflxvideo.net</td>
+      <td>13</td>
+      <td>2845</td>
+    </tr>
+    <tr>
+      <td>ntp.msn.com</td>
+      <td>th.bing.com</td>
+      <td>4</td>
+      <td>1529</td>
+    </tr>
+    <tr>
+      <td>ntp.msn.com</td>
+      <td>www.bing.com</td>
+      <td>4</td>
+      <td>950</td>
+    </tr>
+    <tr>
+      <td>www.netflix.com</td>
+      <td>occ-0-4258-2164.1.nflxso.net</td>
+      <td>4</td>
+      <td>429</td>
+    </tr>
+    <tr>
+      <td>github.com</td>
+      <td>github.githubassets.com</td>
+      <td>3</td>
+      <td>271</td>
+    </tr>
+    <tr>
+      <td>www.bing.com</td>
+      <td>www.bing.com</td>
+      <td>0</td>
+      <td>268</td>
+    </tr>
+    <tr>
+      <td>www.bing.com</td>
+      <td>login.live.com</td>
+      <td>4</td>
+      <td>248</td>
+    </tr>
+    <tr>
+      <td>www.bing.com</td>
+      <td>login.microsoftonline.com</td>
+      <td>1</td>
+      <td>241</td>
+    </tr>
+    <tr>
+      <td>ntp.msn.com</td>
+      <td>www.bing.com</td>
+      <td>13</td>
+      <td>202</td>
+    </tr>
+  </tbody>
+</table></div>
+                        <script>
+                            (function() {
+                                // Get the table
+                                var table = document.querySelector("#table-loading_patterns table");
+                                if (!table) return;
+                                
+                                // Set maximum width and enable horizontal scrolling
+                                table.style.maxWidth = "100%";
+                                
+                                // Get all rows except the header
+                                var rows = Array.from(table.querySelectorAll("tr")).slice(1);
+                                if (rows.length <= 5) return; // No need for pagination if 5 or fewer rows
+                                
+                                // Hide rows beyond the first 5
+                                for (var i = 5; i < rows.length; i++) {
+                                    rows[i].style.display = "none";
+                                }
+                                
+                                // Create pagination controls
+                                var paginationDiv = document.createElement("div");
+                                paginationDiv.style.margin = "10px 0";
+                                
+                                // Show more button
+                                var showMoreBtn = document.createElement("button");
+                                showMoreBtn.innerText = "Show More (5 of " + rows.length + " rows shown)";
+                                showMoreBtn.onclick = function() {
+                                    for (var i = 0; i < rows.length; i++) {
+                                        rows[i].style.display = "";
+                                    }
+                                    this.style.display = "none";
+                                    showLessBtn.style.display = "";
+                                };
+                                
+                                // Show less button (initially hidden)
+                                var showLessBtn = document.createElement("button");
+                                showLessBtn.innerText = "Show Less";
+                                showLessBtn.style.display = "none";
+                                showLessBtn.onclick = function() {
+                                    for (var i = 5; i < rows.length; i++) {
+                                        rows[i].style.display = "none";
+                                    }
+                                    this.style.display = "none";
+                                    showMoreBtn.style.display = "";
+                                };
+                                
+                                // Add buttons to pagination div
+                                paginationDiv.appendChild(showMoreBtn);
+                                paginationDiv.appendChild(showLessBtn);
+                                
+                                // Add pagination div after the table
+                                table.parentNode.appendChild(paginationDiv);
+                            })();
+                        </script>
+                    </div>
+                
+                
+                
+                
+                
+            </div>
+        
+    
+        
+            <div id="timeline" class="section">
+                <h2>Resource Update Timeline</h2>
+                
+                
+                
+                
+                    <div class="visualization">
+                        
+                            <img src="timeline_chart.png" alt="Resource Update Timeline">
+                        
+                    </div>
+                
+                
+                
+            </div>
+        
+    
+
+    <div class="timestamp">
+        <p>Report completed at: 2025-03-29 13:11:43</p>
+    </div>
+</body>
+</html>
