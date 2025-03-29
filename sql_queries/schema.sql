@@ -1,1 +1,0 @@
-DESCRIBE {{ table_name }}
